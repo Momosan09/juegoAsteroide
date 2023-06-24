@@ -21,7 +21,7 @@ public class Interfaz {
 		}
 	
 	public void draw(SpriteBatch batch) {
-		puntos.draw(batch, "Puntos", camara.position.x, camara.position.y);
+		//puntos.draw(batch, "Puntos", (camara.position.x - (Gdx.graphics.getWidth()/2) + 10), (camara.position.y + (Gdx.graphics.getHeight()/2 - 10)));
 	}
 	
 }
