@@ -2,14 +2,12 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class Jugador {
@@ -29,7 +27,6 @@ public class Jugador {
 		colision = new Rectangle(position.x, position.y,sprite.getWidth(),sprite.getHeight());
 		camara = new OrthographicCamera();
 		camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
-
 	}
 	
 	public void draw(SpriteBatch batch) {//no entiendo muy bien lo del batch
@@ -40,11 +37,11 @@ public class Jugador {
 	}
 	
 	public void update() {
-		colision.set(position.x, position.y,sprite.getWidth(),sprite.getHeight());
+		colision.setPosition(position.x, position.y);
+		
 		moverse(Gdx.graphics.getDeltaTime());
 		rotar(Gdx.graphics.getDeltaTime());
 		movimientoCamara();
-
 	}
 	
 	public void moverse(float deltaTime) {
@@ -71,5 +68,9 @@ public class Jugador {
 		if(Gdx.input.isKeyPressed(Keys.LEFT)) position.z += velocidadDeRotacion;
 		if(Gdx.input.isKeyPressed(Keys.RIGHT)) position.z -= velocidadDeRotacion;
 		//sprite.rotate(position.z);
+	}
+	
+	public void checkearColision(Rectangle colision) {
+		if(colision != null && this.colision.overlaps(colision))System.out.println("Auch!");
 	}
 }
