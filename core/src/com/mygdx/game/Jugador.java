@@ -18,13 +18,13 @@ public class Jugador {
 	private Rectangle colision;
 	public OrthographicCamera  camara;
 	private float speed = 4.8f;
-	private float rotation = 0;
+	private float rotation = 0f;
 	private float velocidadDeRotacion = 2.4f;
-	private int puntosDeChoque = 1001;
+	private float multiplicadorDePuntos = 1f;
+	private float puntosDeChoque = 0;
+	private float puntosGanados = 0;
 	
 	BitmapFont puntos;
-	
-	
 	
 	
 	public Jugador(Texture img, OrthographicCamera camara) {
@@ -43,6 +43,7 @@ public class Jugador {
 		sprite.setRotation(position.z);
 		sprite.draw(batch);
 		mostrarPuntos(batch);
+		//mostrarPuntosGanados(batch);
 		update();
 	}
 	
@@ -52,6 +53,9 @@ public class Jugador {
 		moverse(Gdx.graphics.getDeltaTime());
 		rotar(Gdx.graphics.getDeltaTime());
 		movimientoCamara();
+		puntosPasivos(Gdx.graphics.getDeltaTime());
+		//restarTiempo(Gdx.graphics.getDeltaTime());
+		
 	}
 	
 	public void moverse(float deltaTime) {
@@ -62,10 +66,10 @@ public class Jugador {
 		float jugadorRotacionX = MathUtils.cosDeg(position.z);
 		float jugadorRotacionY = MathUtils.sinDeg(position.z);
 		
-		//if(Gdx.input.isKeyPressed(Keys.W)) {
+		if(Gdx.input.isKeyPressed(Keys.W)) {
 			position.x += jugadorRotacionX*speed;
 			position.y += jugadorRotacionY*speed;
-		//}
+		}
 	}
 	
 	public void movimientoCamara() {
@@ -83,24 +87,62 @@ public class Jugador {
 	
 	public void checkearColision(Obstaculo obstaculo) {
 
-	    if (colision != null && colision.overlaps(obstaculo.getColision())) {
+	    if (colision != null && colision.overlaps(obstaculo.getColision()) && !obstaculo.obstaculoMuerto) {
 	    	evaluarChoque(Gdx.graphics.getDeltaTime(), obstaculo.getPuntosNecesarios());
-	    	obstaculo.setObstaculoMuerto();
+	    	obstaculo.obstaculoMuerto = true;
 	        System.out.println("Auch!");
 	    }
 	}
 	
 	public void evaluarChoque(float deltaTime, float puntosDelObjeto) {
+		
 		if(puntosDeChoque > puntosDelObjeto) {
+			float escala = 1.1f;
 			System.out.println("Rompiste el objeto");
+			puntosGanados = (5 * multiplicadorDePuntos); 
+			puntosDeChoque += puntosGanados;
+		
+			sprite.scale(escala);//arreglar problema con la colision
+			colision.setSize(sprite.getWidth() * sprite.getScaleX(), sprite.getHeight() * sprite.getScaleY());
+
+			System.out.println(puntosGanados);
+			
+		}else if(puntosDeChoque == puntosDelObjeto){
+			System.out.println("empate");
 		}else {
 			System.out.println("Moriste");
 		}
+
 	}
 	
 	public void mostrarPuntos(SpriteBatch batch) {
-		puntos.draw(batch, "Puntos = " + puntosDeChoque, (camara.position.x - (Gdx.graphics.getWidth()/2) + 10), (camara.position.y + (Gdx.graphics.getHeight()/2 - 10)));
+		puntos.draw(batch, "Puntos = " + MathUtils.floor(puntosDeChoque) , (camara.position.x - (Gdx.graphics.getWidth()/2) + 10), (camara.position.y + (Gdx.graphics.getHeight()/2 - 10)));
 	}
+	
+	/*public void mostrarPuntosGanados(SpriteBatch batch) {
+		if(puntosGanados!=0) {			
+		BitmapFont puntos = new BitmapFont();
+		puntos.draw(batch, "+" + puntosGanados , position.x - 30 , position.y + 5);
+		}
+	}*/
+	
+	public void escalar(float escala) {
+	    sprite.setScale(escala);
+	    colision.setSize(sprite.getWidth() * sprite.getScaleX(), sprite.getHeight() * sprite.getScaleY());
+	}
+	
+	public void puntosPasivos(float deltaTime) {
+		puntosDeChoque += multiplicadorDePuntos * deltaTime - (deltaTime * multiplicadorDePuntos/3);
+	}
+	
+	/*
+	 * public void restarTiempo(float deltaTime) {
+		if(puntosGanados > 0) {
+			puntosGanados -= deltaTime ;			
+			MathUtils.round(deltaTime);
+		}
+	}
+	*/
 	
 	public float getPositionX() {
 		return position.x;

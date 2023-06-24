@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -7,6 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class PrimeroMain extends ApplicationAdapter {
@@ -22,10 +26,16 @@ public class PrimeroMain extends ApplicationAdapter {
 	Jugador jugador;
 	Texture jugadorImg;
 	
-	Obstaculo obstaculo;
+	
 	Texture obstaculoImg;
+	Texture obstaculoImgRoto;
+	
+	GenerarObstaculo generarObstaculos;
+	Array<Obstaculo> obstaculos;
 	
 	BitmapFont font;
+	
+	private int cantidadObstaculos = 30;
 	
 	
 	
@@ -48,7 +58,17 @@ public class PrimeroMain extends ApplicationAdapter {
 		
 		//Obstaculo
 		obstaculoImg = new Texture("obstaculo1.png");
-		obstaculo = new Obstaculo(obstaculoImg);
+		obstaculoImgRoto = new Texture("obstaculo1Roto.png");
+		generarObstaculos = new GenerarObstaculo(obstaculoImg, obstaculoImgRoto);
+		obstaculos = new Array<>();
+		
+		
+		for(int i=0;i<cantidadObstaculos;i++) {
+			Obstaculo obstaculo = generarObstaculos.generarObstaculo();
+			obstaculos.add(obstaculo);
+			
+		}
+			
 	}
 
 	@Override
@@ -59,10 +79,15 @@ public class PrimeroMain extends ApplicationAdapter {
 		fondo.draw(batch);
 		interfaz.draw(batch);
 		//fondo.setPosition(jugador.position.x-(Gdx.graphics.getDeltaTime()*2), 0); hacer un efecto piola en el fondo, como que se mueve lento o algun paralaje
-		obstaculo.draw(batch);
+		
+	    for (Obstaculo o : obstaculos) {
+	        o.draw(batch);
+			jugador.checkearColision(o);
+	    }
+		
 		jugador.draw(batch);//no termino de entenderr lo del Batch 
 		
-		jugador.checkearColision(obstaculo);
+
 		
 		batch.end();
 	}
