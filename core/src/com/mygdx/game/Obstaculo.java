@@ -10,10 +10,12 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Obstaculo {
 
-	public Sprite sprite;
-	public Vector2 position;
-	public Rectangle colision;
-	public float puntosNecesarios;
+	private Sprite sprite;
+	private Vector2 position;
+	private Rectangle colision;
+	private float puntosNecesarios = MathUtils.random(0,1000);
+	private boolean obstaculoMuerto = false;
+
 	
 	public Obstaculo(Texture img){
 		sprite = new Sprite(img);
@@ -29,12 +31,27 @@ public class Obstaculo {
 	}
 	
 	public void draw(SpriteBatch batch) {
+		if(!obstaculoMuerto) {			
 		sprite.setPosition(position.x, position.y);
+		colision.setPosition(position.x, position.y);
 		sprite.draw(batch);
 		update();
+		}else {
+			Texture img = new Texture("obstaculo1Roto.png");
+			sprite.setTexture(img);
+			sprite.draw(batch);
+		}
 	}
 	
 	public Rectangle getColision() {
 		return colision;
+	}
+	public float getPuntosNecesarios() {
+		return puntosNecesarios;
+	}
+	
+	public void setObstaculoMuerto() {
+		obstaculoMuerto = true;
+		
 	}
 }

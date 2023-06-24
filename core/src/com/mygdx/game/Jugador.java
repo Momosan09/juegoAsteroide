@@ -12,13 +12,14 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Jugador {
 
-	public Vector3 position;
-	public Sprite sprite;
-	public Rectangle colision;
+	private Vector3 position;
+	private Sprite sprite;
+	private Rectangle colision;
 	public OrthographicCamera  camara;
-	public float speed = 4.8f;
-	public float rotation = 0;
-	public float velocidadDeRotacion = 2.4f;
+	private float speed = 4.8f;
+	private float rotation = 0;
+	private float velocidadDeRotacion = 2.4f;
+	private int puntosDeChoque = 1001;
 	
 	
 	public Jugador(Texture img) {
@@ -26,7 +27,7 @@ public class Jugador {
 		position = new Vector3(Gdx.graphics.getWidth()/2 - (sprite.getWidth()/2), Gdx.graphics.getHeight()/2 - (sprite.getHeight()/2), rotation );	//posicion inicial
 		colision = new Rectangle(position.x, position.y,sprite.getWidth(),sprite.getHeight());
 		camara = new OrthographicCamera();
-		camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+		camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
 	public void draw(SpriteBatch batch) {//no entiendo muy bien lo del batch
@@ -70,7 +71,29 @@ public class Jugador {
 		//sprite.rotate(position.z);
 	}
 	
-	public void checkearColision(Rectangle colision) {
-		if(colision != null && this.colision.overlaps(colision))System.out.println("Auch!");
+	public void checkearColision(Obstaculo obstaculo) {
+
+	    if (colision != null && colision.overlaps(obstaculo.getColision())) {
+	    	evaluarChoque(Gdx.graphics.getDeltaTime(), obstaculo.getPuntosNecesarios());
+	    	obstaculo.setObstaculoMuerto();
+	        System.out.println("Auch!");
+	    }
 	}
+	
+	public void evaluarChoque(float deltaTime, float puntosDelObjeto) {
+		if(puntosDeChoque > puntosDelObjeto) {
+			System.out.println("Rompiste el objeto");
+		}else {
+			System.out.println("Moriste");
+		}
+	}
+	
+	public float getPositionX() {
+		return position.x;
+	}
+	public float getPositionY() {
+		return position.y;
+	}
+	
+	
 }
