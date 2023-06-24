@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -21,18 +22,24 @@ public class Jugador {
 	private float velocidadDeRotacion = 2.4f;
 	private int puntosDeChoque = 1001;
 	
+	private BitmapFont font;
 	
-	public Jugador(Texture img) {
+	
+	public Jugador(Texture img, OrthographicCamera camara) {
 		sprite = new Sprite(img);
 		position = new Vector3(Gdx.graphics.getWidth()/2 - (sprite.getWidth()/2), Gdx.graphics.getHeight()/2 - (sprite.getHeight()/2), rotation );	//posicion inicial
 		colision = new Rectangle(position.x, position.y,sprite.getWidth(),sprite.getHeight());
 		camara = new OrthographicCamera();
-		camara.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		this.camara = new OrthographicCamera();
+		this.camara = camara;
+		
+		font = new BitmapFont();
 	}
 	
 	public void draw(SpriteBatch batch) {//no entiendo muy bien lo del batch
 		sprite.setPosition(position.x, position.y);//Va a dibujar el sprite en la posicion del jugador
 		sprite.setRotation(position.z);
+		font.draw(batch, "Puntaje" ,(camara.position.x-100),(camara.position.y+100));
 		sprite.draw(batch);
 		update();
 	}
@@ -62,6 +69,7 @@ public class Jugador {
 	public void movimientoCamara() {
 		camara.position.set(position.x, position.y,0);
 		camara.update();
+
 	}
 	
 	public void rotar(float deltaTime) {
