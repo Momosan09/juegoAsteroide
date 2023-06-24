@@ -1,5 +1,5 @@
 # Para Hacer
-## [x] <sup>parcialmente</sup> Hacer una interfaz con informacion en forma de texto que se mantenga anclada al mismo lugar de la pantalla
+## [x] <sub>parcialmente</sub> Hacer una interfaz con informacion en forma de texto que se mantenga anclada al mismo lugar de la pantalla
 ## [] Crear diferentes tipos de obstaculos y que se generen mas de forma aleatoria
 ## [] Crear objetivos
 
