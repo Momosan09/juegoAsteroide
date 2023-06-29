@@ -15,6 +15,7 @@ public class Jugador {
 
 	private Vector3 position;
 	private Sprite sprite;
+	private Texture imgRoto;
 	private Rectangle colision;
 	public OrthographicCamera  camara;
 	private float speed = 4.8f;
@@ -23,12 +24,14 @@ public class Jugador {
 	private float multiplicadorDePuntos = 1f;
 	private float puntosDeChoque = 0;
 	private float puntosGanados = 0;
+	private boolean vivo = true;
 	
 	BitmapFont puntos;
 	
 	
-	public Jugador(Texture img, OrthographicCamera camara) {
+	public Jugador(Texture img,  Texture imgRoto, OrthographicCamera camara) {
 		sprite = new Sprite(img);
+		this.imgRoto = imgRoto;
 		position = new Vector3(Gdx.graphics.getWidth()/2 - (sprite.getWidth()/2), Gdx.graphics.getHeight()/2 - (sprite.getHeight()/2), rotation );	//posicion inicial
 		colision = new Rectangle(position.x, position.y,sprite.getWidth(),sprite.getHeight());
 		puntos = new BitmapFont();
@@ -39,12 +42,17 @@ public class Jugador {
 	}
 	
 	public void draw(SpriteBatch batch) {//no entiendo muy bien lo del batch
+		if(vivo) {
 		sprite.setPosition(position.x, position.y);//Va a dibujar el sprite en la posicion del jugador
 		sprite.setRotation(position.z);
 		sprite.draw(batch);
 		mostrarPuntos(batch);
 		//mostrarPuntosGanados(batch);
 		update();
+		}else {
+			sprite.setTexture(imgRoto);
+			sprite.draw(batch);
+		}
 	}
 	
 	public void update() {
@@ -55,7 +63,7 @@ public class Jugador {
 		movimientoCamara();
 		puntosPasivos(Gdx.graphics.getDeltaTime());
 		//restarTiempo(Gdx.graphics.getDeltaTime());
-		
+
 	}
 	
 	public void moverse(float deltaTime) {
@@ -110,6 +118,7 @@ public class Jugador {
 		}else if(puntosDeChoque == puntosDelObjeto){
 			System.out.println("empate");
 		}else {
+			vivo = false;
 			System.out.println("Moriste");
 		}
 

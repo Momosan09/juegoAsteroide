@@ -13,23 +13,23 @@ public class Obstaculo {
 
 	BitmapFont puntos;
 	
-	private Sprite sprite;
-	private Texture imgRoto;
-	private Vector2 position;
+	protected Sprite sprite;
+	protected Texture imgRoto;
+	protected Vector2 position; // protected lo hace publico para la herencia
 	private Rectangle colision;
-	private final float PUNTOS_NECESARIOS;
+	protected float puntosNecesarios;
 	public boolean obstaculoMuerto = false;
 
 	
-	public Obstaculo(Texture img, Texture imgRoto, float x, float y, float puntosNecesarios){
+	public Obstaculo(Texture img, Texture imgRoto){
 		sprite = new Sprite(img);
 		this.imgRoto = imgRoto;
 		position = new Vector2();
 		colision = new Rectangle();
 		puntos = new BitmapFont();
-		position.x = x;
-		position.y = y;
-		PUNTOS_NECESARIOS = puntosNecesarios;
+		position.x = MathUtils.random(0, Gdx.graphics.getWidth() * 3);
+		position.y = MathUtils.random(0, Gdx.graphics.getWidth() * 3);;
+		puntosNecesarios = MathUtils.random(0, 10);;
 		colision.setSize(sprite.getWidth(), sprite.getHeight());
 	}
 	
@@ -42,7 +42,7 @@ public class Obstaculo {
 		sprite.setPosition(position.x, position.y);
 		colision.setPosition(position.x, position.y);
 		sprite.draw(batch);
-		puntos.draw(batch, "" + PUNTOS_NECESARIOS, position.x + 15, position.y - 5);
+		puntos.draw(batch, "" + puntosNecesarios, position.x + 15, position.y - 5);
 		update();
 		}else {
 			sprite.setTexture(imgRoto);
@@ -54,7 +54,7 @@ public class Obstaculo {
 		return colision;
 	}
 	public float getPuntosNecesarios() {
-		return PUNTOS_NECESARIOS;
+		return puntosNecesarios;
 	}
 	
 	//ver como hacer para que no se superpongan

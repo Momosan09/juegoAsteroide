@@ -25,12 +25,15 @@ public class PrimeroMain extends ApplicationAdapter {
 	
 	Jugador jugador;
 	Texture jugadorImg;
+	Texture jugadorImgRoto;
 	
 	
 	Texture obstaculoImg;
 	Texture obstaculoImgRoto;
 	
-	GenerarObstaculo generarObstaculos;
+	Texture planetaImg;
+	Texture planetaImgRoto;
+	
 	Array<Obstaculo> obstaculos;
 	
 	BitmapFont font;
@@ -54,18 +57,24 @@ public class PrimeroMain extends ApplicationAdapter {
 		
 		//Jugador
 		jugadorImg = new Texture("jugadorImagen.png");
-		jugador = new Jugador(jugadorImg, camara);
+		jugadorImgRoto = new Texture("jugadorImagenRoto.png");
+		jugador = new Jugador(jugadorImg, jugadorImgRoto, camara);
 		
 		//Obstaculo
 		obstaculoImg = new Texture("obstaculo1.png");
 		obstaculoImgRoto = new Texture("obstaculo1Roto.png");
-		generarObstaculos = new GenerarObstaculo(obstaculoImg, obstaculoImgRoto);
+		planetaImg = new Texture("planeta1.png");
+		planetaImgRoto = new Texture("planeta1Roto.png");
+		
 		obstaculos = new Array<>();
 		
 		
 		for(int i=0;i<cantidadObstaculos;i++) {
-			Obstaculo obstaculo = generarObstaculos.generarObstaculo();
+
+			Obstaculo obstaculo = new Planeta(planetaImg,planetaImgRoto);
+			Obstaculo obstaculo1 = new Planeta(obstaculoImg,obstaculoImgRoto);
 			obstaculos.add(obstaculo);
+			obstaculos.add(obstaculo1);
 			
 		}
 			
@@ -81,6 +90,7 @@ public class PrimeroMain extends ApplicationAdapter {
 		//fondo.setPosition(jugador.position.x-(Gdx.graphics.getDeltaTime()*2), 0); hacer un efecto piola en el fondo, como que se mueve lento o algun paralaje
 		
 	    for (Obstaculo o : obstaculos) {
+	    	o.update();
 	        o.draw(batch);
 			jugador.checkearColision(o);
 	    }
