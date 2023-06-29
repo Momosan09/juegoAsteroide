@@ -2,11 +2,14 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -26,6 +29,8 @@ public class Jugador {
 	private float puntosGanados = 0;
 	private boolean vivo = true;
 	
+	private ShapeRenderer shape;
+	
 	BitmapFont puntos;
 	
 	
@@ -35,25 +40,28 @@ public class Jugador {
 		position = new Vector3(Gdx.graphics.getWidth()/2 - (sprite.getWidth()/2), Gdx.graphics.getHeight()/2 - (sprite.getHeight()/2), rotation );	//posicion inicial
 		colision = new Rectangle(position.x, position.y,sprite.getWidth(),sprite.getHeight());
 		puntos = new BitmapFont();
-		camara = new OrthographicCamera();
 		this.camara = new OrthographicCamera();
 		this.camara = camara;
+	    shape = new ShapeRenderer();
 		
 	}
 	
-	public void draw(SpriteBatch batch) {//no entiendo muy bien lo del batch
-		if(vivo) {
-		sprite.setPosition(position.x, position.y);//Va a dibujar el sprite en la posicion del jugador
-		sprite.setRotation(position.z);
-		sprite.draw(batch);
-		mostrarPuntos(batch);
-		//mostrarPuntosGanados(batch);
-		update();
-		}else {
-			sprite.setTexture(imgRoto);
-			sprite.draw(batch);
-		}
+	public void draw(SpriteBatch batch) {
+        batch.setProjectionMatrix(camara.combined); // Configura la cámara
+        dibujarColision();
+	    if (vivo) {
+	        sprite.setPosition(position.x, position.y);
+	        sprite.setRotation(position.z);
+	        sprite.draw(batch);
+	        mostrarPuntos(batch);
+	        // mostrarPuntosGanados(batch);
+	        update();
+	    } else {
+	        sprite.setTexture(imgRoto);
+	        sprite.draw(batch);
+	    }
 	}
+
 	
 	public void update() {
 		colision.setPosition(position.x, position.y);
@@ -62,6 +70,7 @@ public class Jugador {
 		rotar(Gdx.graphics.getDeltaTime());
 		movimientoCamara();
 		puntosPasivos(Gdx.graphics.getDeltaTime());
+
 		//restarTiempo(Gdx.graphics.getDeltaTime());
 
 	}
@@ -92,6 +101,7 @@ public class Jugador {
 		if(Gdx.input.isKeyPressed(Keys.RIGHT)) position.z -= velocidadDeRotacion;
 		//sprite.rotate(position.z);
 	}
+
 	
 	public void checkearColision(Obstaculo obstaculo) {
 
@@ -110,10 +120,10 @@ public class Jugador {
 			puntosGanados = (5 * multiplicadorDePuntos); 
 			puntosDeChoque += puntosGanados;
 		
-			sprite.scale(escala);//arreglar problema con la colision
-			colision.setSize(sprite.getWidth() * sprite.getScaleX(), sprite.getHeight() * sprite.getScaleY());
+			escalar(escala);
 
 			System.out.println(puntosGanados);
+			escala += 0.1;
 			
 		}else if(puntosDeChoque == puntosDelObjeto){
 			System.out.println("empate");
@@ -136,9 +146,15 @@ public class Jugador {
 	}*/
 	
 	public void escalar(float escala) {
-	    sprite.setScale(escala);
-	    colision.setSize(sprite.getWidth() * sprite.getScaleX(), sprite.getHeight() * sprite.getScaleY());
+	    float nuevaEscala = sprite.getScaleX() * escala;
+	    sprite.setScale(nuevaEscala);
+	    colision.setSize(sprite.getWidth() * nuevaEscala, sprite.getHeight() * nuevaEscala);
+	    
+	    // Ajustar la posición de la colisión según la escala
+	    colision.setPosition(position.x - (sprite.getWidth()) / 2, position.y - (sprite.getHeight()) / 2);
 	}
+
+
 	
 	public void puntosPasivos(float deltaTime) {
 		puntosDeChoque += multiplicadorDePuntos * deltaTime - (deltaTime * multiplicadorDePuntos/3);
@@ -152,6 +168,14 @@ public class Jugador {
 		}
 	}
 	*/
+    public void dibujarColision() {
+        shape.setProjectionMatrix(camara.combined); // Establecer la matriz de proyección adecuada
+        shape.begin(ShapeType.Line);
+        shape.setColor(Color.VIOLET);
+        shape.rect(colision.x, colision.y, colision.width, colision.height);
+        shape.end();
+    }
+
 	
 	public float getPositionX() {
 		return position.x;

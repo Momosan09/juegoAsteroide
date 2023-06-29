@@ -118,6 +118,7 @@ public class PrimeroMain extends ApplicationAdapter {
 	public void seguimientoDeLaCamara() {
 		batch.setProjectionMatrix(camara.combined);//Al renderizar los elementos del juego, asegúrate de utilizar la matriz de proyección de la cámara para que los objetos se muestren correctamente en relación con la vista de la cámara. chat gpt me dijo eso lol
 		camara.position.set(jugador.getPositionX(), jugador.getPositionY(),0);
+		camara.zoom = 1.0f;
 		camara.update();
 	}
 }
